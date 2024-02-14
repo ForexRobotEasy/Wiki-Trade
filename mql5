@@ -1,0 +1,60 @@
+
+// Developer: Forex Robot Easy Team
+// Website: forexroboteasy.com
+
+// Wiki Trade EA
+// Automated trading software for the Forex market
+
+// Define the symbol and timeframe
+string symbol = 'EURUSD';
+ENUM_TIMEFRAMES timeframe = PERIOD_M15;
+
+// Define the entry and exit conditions
+double takeProfit = 50; // take profit in pips
+double stopLoss = 20; // stop loss in pips
+
+// Define the order type
+ENUM_ORDER_TYPE orderType = ORDER_TYPE_BUY; // buy order
+
+// Calculate the entry price
+double entryPrice = SymbolInfoDouble(symbol, SYMBOL_ASK);
+
+// Calculate the take profit and stop loss levels
+double tpPrice = entryPrice + takeProfit * SymbolInfoDouble(symbol, SYMBOL_POINT);
+double slPrice = entryPrice - stopLoss * SymbolInfoDouble(symbol, SYMBOL_POINT);
+
+// Open the trade
+int ticket = OrderSend(
+    symbol,           // symbol
+    orderType,        // order type
+    0.1,              // lot size
+    entryPrice,       // entry price
+    0,                // slippage
+    slPrice,          // stop loss
+    tpPrice,          // take profit
+    'Wiki Trade EA',  // comment
+    0,                // magic number
+    0,                // expiration
+    clrNONE           // arrow color
+);
+
+// Check if the trade was opened successfully
+if(ticket > 0){
+    // Trade opened successfully
+    Print('Trade opened successfully. Ticket: ', ticket);
+}
+else{
+    // Failed to open trade
+    Print('Failed to open trade. Error code: ', GetLastError());
+}
+
+// Close the trade
+bool closeTrade = OrderClose(ticket, OrderLots(), Bid, 5, clrNONE);
+if(closeTrade){
+    // Trade closed successfully
+    Print('Trade closed successfully');
+}
+else{
+    // Failed to close trade
+    Print('Failed to close trade. Error code: ', GetLastError());
+}
